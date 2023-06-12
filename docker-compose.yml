@@ -1,0 +1,15 @@
+﻿services:
+  db:
+    image: mysql:8
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_pwd_secret
+    secrets:
+      - mysql_root_pwd_secret
+
+secrets: 
+  mysql_root_pwd_secret:
+    file: ./DockerSecrets/mysql-root-pwd
+    
