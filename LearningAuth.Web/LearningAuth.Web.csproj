@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
+      <ProjectReference Include="..\LearningAuth.Data\LearningAuth.Data.csproj" />
     </ItemGroup>
 
 </Project>
