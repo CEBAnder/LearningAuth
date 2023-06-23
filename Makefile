@@ -19,4 +19,4 @@ publish:
 docker_all: docker_build
 
 docker_build:
-	docker build . -f WebApi/Dockerfile -t learning_auth:$(build_version)
+	docker build . -f LearningAuth.Web/Dockerfile -t learning_auth:$(build_version)

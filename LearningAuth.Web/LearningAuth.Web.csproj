@@ -5,6 +5,8 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <AssemblyName>LearningAuth.Web</AssemblyName>
+        <RootNamespace>LearningAuth.Web</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
