@@ -1,6 +1,6 @@
 using System.Data;
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using MySqlConnector;
 
 namespace LearningAuth.Data;
 
@@ -10,11 +10,11 @@ public class DbContext
 
     public DbContext(IConfiguration configuration)
     {
-        _connectionString = configuration.GetConnectionString("SqlConnection");
+        _connectionString = configuration.GetConnectionString("SqlConnection")!;
     }
 
     public IDbConnection CreateConnection()
     {
-        return new SqlConnection(_connectionString);
+        return new MySqlConnection(_connectionString);
     }
 }

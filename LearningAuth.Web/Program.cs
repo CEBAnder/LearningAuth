@@ -9,6 +9,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<DbContext>();
+builder.Services.AddSingleton<Database>();
 
 var app = builder.Build();
 
@@ -24,5 +25,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MigrateDatabaseAsync().GetAwaiter().GetResult();
 
 app.Run();
