@@ -1,4 +1,6 @@
+using FluentMigrator.Runner;
 using LearningAuth.Data;
+using LearningAuth.Data.Migrations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<DbContext>();
 builder.Services.AddSingleton<Database>();
+builder.Services
+    .AddFluentMigratorCore()
+    .ConfigureRunner(rb => rb
+        .AddMySql5()
+        .WithGlobalConnectionString(builder.Configuration.GetConnectionString("SqlConnection"))
+        .ScanIn(typeof(InitialMigration).Assembly).For.Migrations());
 
 var app = builder.Build();
 
