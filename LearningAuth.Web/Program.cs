@@ -17,7 +17,7 @@ builder.Services
     .ConfigureRunner(rb => rb
         .AddMySql5()
         .WithGlobalConnectionString(builder.Configuration.GetConnectionString("SqlConnection"))
-        .ScanIn(typeof(InitialMigration).Assembly).For.Migrations());
+        .ScanIn(typeof(Migration_1_AddUserTable).Assembly).For.Migrations());
 
 var app = builder.Build();
 
@@ -34,6 +34,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MigrateDatabaseAsync().GetAwaiter().GetResult();
+app.MigrateDatabase();
 
 app.Run();

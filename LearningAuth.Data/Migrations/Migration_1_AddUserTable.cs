@@ -3,7 +3,7 @@ using FluentMigrator;
 namespace LearningAuth.Data.Migrations;
 
 [Migration(1, "Add User table")]
-public class InitialMigration : Migration
+public class Migration_1_AddUserTable : AutoReversingMigration
 {
     public override void Up()
     {
@@ -12,10 +12,5 @@ public class InitialMigration : Migration
             .WithColumn("PasswordHash").AsString().NotNullable()
             .WithColumn("Name").AsString().Nullable()
             .WithColumn("DateOfBirth").AsDate().Nullable();
-    }
-
-    public override void Down()
-    {
-        Delete.Table("User");
     }
 }

@@ -11,17 +11,16 @@ public class Database
         _dbContext = dbContext;
     }
 
-    public async Task CreateDatabaseAsync(string dbName, CancellationToken cancellationToken = default)
+    public void CreateDatabase(string dbName)
     {
-        cancellationToken.ThrowIfCancellationRequested();
         var query = $"SHOW DATABASES LIKE '{dbName}';";
 
         using var connection = _dbContext.CreateConnection();
-        var databases = await connection.QueryAsync(query);
+        var databases = connection.Query(query);
         if (!databases.Any())
         {
             var createQuery = $"CREATE DATABASE {dbName};";
-            await connection.ExecuteAsync(createQuery);
+            connection.Execute(createQuery);
         }
     }
 }
