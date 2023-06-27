@@ -6,4 +6,5 @@ public class User
     public string PasswordHash { get; set; } = null!;
     public string? Name { get; set; }
     public DateTime? DateOfBirth { get; set; }
+    public string Roles { get; set; } = null!;
 }
