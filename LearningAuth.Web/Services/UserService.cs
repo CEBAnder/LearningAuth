@@ -28,4 +28,9 @@ public class UserService : IUserService
         await _userRepository.AddUserAsync(userToAdd, cancellationToken);
         return newUserId;
     }
+
+    public async Task<User> FindUserAsync(string name, string password, CancellationToken cancellationToken = default)
+    {
+        return await _userRepository.FindUser(name, password.GetHashCode().ToString(), cancellationToken);
+    }
 }

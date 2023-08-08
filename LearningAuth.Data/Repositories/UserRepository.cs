@@ -26,4 +26,31 @@ public class UserRepository : IUserRepository
             roles = user.Roles
         });
     }
+
+    public async Task<User> FindUser(Guid userId, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        var connection = _dbContext.CreateConnection();
+        var sql = "SELECT * FROM User WHERE Id = @id";
+        var user = await connection.QuerySingleOrDefaultAsync<User>(sql, new
+        {
+            id = userId
+        });
+
+        return user ?? throw new Exception($"Not found user with Id = {userId}");
+    }
+
+    public async Task<User> FindUser(string name, string passwordHash, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        var connection = _dbContext.CreateConnection();
+        var sql = "SELECT * FROM User WHERE Name = @name AND PasswordHash = @passwordHash";
+        var user = await connection.QuerySingleOrDefaultAsync<User>(sql, new
+        {
+            name,
+            passwordHash
+        });
+
+        return user ?? throw new Exception($"Not found user with Name = {name}");
+    }
 }
