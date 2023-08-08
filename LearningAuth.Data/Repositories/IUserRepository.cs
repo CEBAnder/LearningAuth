@@ -1,8 +1,8 @@
-using LearningAuth.Data.Commands;
+using LearningAuth.Data.Models;
 
 namespace LearningAuth.Data.Repositories;
 
 public interface IUserRepository
 {
-    Task AddUserAsync(AddUserCommand command, CancellationToken cancellationToken = default);
+    Task AddUserAsync(User user, CancellationToken cancellationToken = default);
 }

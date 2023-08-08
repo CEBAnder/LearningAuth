@@ -1,6 +1,6 @@
-namespace LearningAuth.Data.Commands;
+namespace LearningAuth.Web.Models;
 
-public class AddUserCommand
+public class User
 {
     public string? Name { get; set; }
     public string Password { get; set; } = null!;

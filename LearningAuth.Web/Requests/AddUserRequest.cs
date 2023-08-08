@@ -1,4 +1,4 @@
-using LearningAuth.Data.Commands;
+using LearningAuth.Web.Commands;
 
 namespace LearningAuth.Web.Requests;
 

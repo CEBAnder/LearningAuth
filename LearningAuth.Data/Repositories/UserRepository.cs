@@ -1,5 +1,5 @@
 using Dapper;
-using LearningAuth.Data.Commands;
+using LearningAuth.Data.Models;
 
 namespace LearningAuth.Data.Repositories;
 
@@ -12,17 +12,18 @@ public class UserRepository : IUserRepository
         _dbContext = dbContext;
     }
 
-    public async Task AddUserAsync(AddUserCommand command, CancellationToken cancellationToken = default)
+    public async Task AddUserAsync(User user, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         var connection = _dbContext.CreateConnection();
         var sql = "INSERT INTO User VALUES (@id, @pwdHash, @name, @dateOfBirth, @roles)";
         await connection.ExecuteAsync(sql, new
         {
-            id = Guid.NewGuid(),
-            name = command.Name,
-            pwdHash = command.Password.GetHashCode(),
-            dateOfBirth = command.DateOfBirth,
-            roles = command.Roles
+            id = user.Id,
+            name = user.Name,
+            pwdHash = user.PasswordHash,
+            dateOfBirth = user.DateOfBirth,
+            roles = user.Roles
         });
     }
 }
