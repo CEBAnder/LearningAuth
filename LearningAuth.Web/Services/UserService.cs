@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using LearningAuth.Data.Repositories;
 using LearningAuth.Web.Commands;
 using User = LearningAuth.Data.Models.User;
@@ -20,7 +22,7 @@ public class UserService : IUserService
         {
             Id = newUserId,
             Name = command.Name,
-            PasswordHash = command.Password.GetHashCode().ToString(),
+            PasswordHash = HashPassword(command.Password),
             DateOfBirth = command.DateOfBirth,
             Roles = command.Roles
         };
@@ -31,6 +33,11 @@ public class UserService : IUserService
 
     public async Task<User> FindUserAsync(string name, string password, CancellationToken cancellationToken = default)
     {
-        return await _userRepository.FindUser(name, password.GetHashCode().ToString(), cancellationToken);
+        return await _userRepository.FindUser(name, HashPassword(password), cancellationToken);
+    }
+
+    private string HashPassword(string password)
+    {
+        return Convert.ToHexString(MD5.HashData(Encoding.UTF8.GetBytes(password)));
     }
 }

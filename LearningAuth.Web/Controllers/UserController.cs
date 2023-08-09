@@ -1,6 +1,12 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using LearningAuth.Web.Models;
 using LearningAuth.Web.Requests;
 using LearningAuth.Web.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace LearningAuth.Web.Controllers;
 
@@ -26,6 +32,26 @@ public class UserController : ControllerBase
         CancellationToken cancellationToken = default)
     {
         var user = await _userService.FindUserAsync(request.Name, request.Password, cancellationToken);
-        return Ok(user);
+        var claims = new List<Claim> {new(ClaimTypes.Name, user.Name!) };
+        var roles = user.Roles.Split(',');
+        foreach (var role in roles)
+        {
+            claims.Add(new(ClaimTypes.Role, role));
+        }
+        var jwt = new JwtSecurityToken(
+            issuer: AuthOptions.ISSUER,
+            audience: AuthOptions.AUDIENCE,
+            claims: claims,
+            expires: DateTime.UtcNow.Add(TimeSpan.FromDays(2)),
+            signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+            
+        return Ok(new JwtSecurityTokenHandler().WriteToken(jwt));
+    }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpGet]
+    public IActionResult Get()
+    {
+        return Ok("Got secret string");
     }
 }
