@@ -41,7 +41,8 @@ builder.Services
                 IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
                 ValidateIssuerSigningKey = true
             };
-        });
+        })
+    .AddCookie();
 
 var app = builder.Build();
 

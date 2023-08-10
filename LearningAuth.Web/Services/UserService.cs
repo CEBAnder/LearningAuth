@@ -5,6 +5,7 @@ using System.Text;
 using LearningAuth.Data.Repositories;
 using LearningAuth.Web.Commands;
 using LearningAuth.Web.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.IdentityModel.Tokens;
 using User = LearningAuth.Data.Models.User;
 
@@ -52,6 +53,19 @@ public class UserService : IUserService
             signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
 
         return new JwtSecurityTokenHandler().WriteToken(jwt);
+    }
+
+    public async Task<ClaimsPrincipal> GetCookiesPrincipalAsync(string name, string password, CancellationToken cancellationToken = default)
+    {
+        var user = await _userRepository.FindUser(name, HashPassword(password), cancellationToken);
+        var claims = new List<Claim> {new(ClaimTypes.Name, user.Name!) };
+        var roles = user.Roles.Split(',');
+        foreach (var role in roles)
+        {
+            claims.Add(new(ClaimTypes.Role, role));
+        }
+
+        return new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
     }
 
     private string HashPassword(string password)

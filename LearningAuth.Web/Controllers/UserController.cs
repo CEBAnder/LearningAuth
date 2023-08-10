@@ -1,6 +1,8 @@
 using System.Security.Claims;
 using LearningAuth.Web.Requests;
 using LearningAuth.Web.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,9 +33,27 @@ public class UserController : ControllerBase
         return Ok(token);
     }
 
+    [HttpPost("login/cookie")]
+    public async Task<IActionResult> LoginAndGetCookie([FromBody] LoginRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var principal = await _userService.GetCookiesPrincipalAsync(request.Name, request.Password, cancellationToken);
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+        
+        return Ok();
+    }
+
     [Authorize]
     [HttpGet]
     public IActionResult Get()
+    {
+        var userName = HttpContext.User.Claims.First(claim => claim.Type == ClaimTypes.Name).Value;
+        return Ok($"User's name = {userName}");
+    }
+
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+    [HttpGet("cookie")]
+    public IActionResult GetByCookie()
     {
         var userName = HttpContext.User.Claims.First(claim => claim.Type == ClaimTypes.Name).Value;
         return Ok($"User's name = {userName}");
