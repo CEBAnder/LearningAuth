@@ -4,7 +4,9 @@ using LearningAuth.Data.Migrations;
 using LearningAuth.Data.Repositories;
 using LearningAuth.Web.Models;
 using LearningAuth.Web.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,7 +27,6 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 
-builder.Services.AddAuthorization();
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(
@@ -43,6 +44,18 @@ builder.Services
             };
         })
     .AddCookie();
+builder.Services
+    .AddAuthorization(
+        options =>
+        {
+            options.AddPolicy(
+                "cookie_admin",
+                policy =>
+                {
+                    policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
+                    policy.Requirements.Add(new RolesAuthorizationRequirement(new List<string> { "admin" }));
+                });
+        });
 
 var app = builder.Build();
 

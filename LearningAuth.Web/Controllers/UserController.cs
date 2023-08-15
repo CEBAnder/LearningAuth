@@ -51,7 +51,7 @@ public class UserController : ControllerBase
         return Ok($"User's name = {userName}");
     }
 
-    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+    [Authorize("cookie_admin")]
     [HttpGet("cookie")]
     public IActionResult GetByCookie()
     {
