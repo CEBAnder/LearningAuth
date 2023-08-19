@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using LearningAuth.Contracts.Shared;
 using LearningAuth.Data.Repositories;
 using LearningAuth.Web.Commands;
 using LearningAuth.Web.Models;
@@ -41,10 +42,10 @@ public class UserService : IUserService
     {
         var user = await _userRepository.FindUser(name, HashPassword(password), cancellationToken);
         var claims = new List<Claim> {new(ClaimTypes.Name, user.Name!) };
-        var roles = user.Roles.Split(',');
+        var roles = JsonSerializer.Deserialize<IEnumerable<Role>>(user.Roles)!;
         foreach (var role in roles)
         {
-            claims.Add(new(ClaimTypes.Role, role));
+            claims.Add(new(ClaimTypes.Role, role.ToString()));
         }
         var jwt = new JwtSecurityToken(
             issuer: AuthOptions.ISSUER,
@@ -60,10 +61,10 @@ public class UserService : IUserService
     {
         var user = await _userRepository.FindUser(name, HashPassword(password), cancellationToken);
         var claims = new List<Claim> {new(ClaimTypes.Name, user.Name!) };
-        var roles = user.Roles.Split(',');
+        var roles = JsonSerializer.Deserialize<IEnumerable<Role>>(user.Roles)!;
         foreach (var role in roles)
         {
-            claims.Add(new(ClaimTypes.Role, role));
+            claims.Add(new(ClaimTypes.Role, role.ToString()));
         }
 
         return new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));

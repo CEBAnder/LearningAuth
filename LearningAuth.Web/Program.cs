@@ -1,4 +1,5 @@
 using FluentMigrator.Runner;
+using LearningAuth.Contracts.Shared;
 using LearningAuth.Data;
 using LearningAuth.Data.Migrations;
 using LearningAuth.Data.Repositories;
@@ -53,7 +54,7 @@ builder.Services
                 policy =>
                 {
                     policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
-                    policy.Requirements.Add(new RolesAuthorizationRequirement(new List<string> { "admin" }));
+                    policy.Requirements.Add(new RolesAuthorizationRequirement(new List<string> { Role.Admin.ToString() }));
                 });
         });
 
