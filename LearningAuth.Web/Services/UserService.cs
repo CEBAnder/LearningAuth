@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using LearningAuth.Data.Repositories;
 using LearningAuth.Web.Commands;
 using LearningAuth.Web.Models;
@@ -29,7 +30,7 @@ public class UserService : IUserService
             Name = command.Name,
             PasswordHash = HashPassword(command.Password),
             DateOfBirth = command.DateOfBirth,
-            Roles = command.Roles
+            Roles = JsonSerializer.Serialize(command.Roles)
         };
 
         await _userRepository.AddUserAsync(userToAdd, cancellationToken);

@@ -23,6 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\LearningAuth.Contracts.Shared\LearningAuth.Contracts.Shared.csproj" />
       <ProjectReference Include="..\LearningAuth.Data\LearningAuth.Data.csproj" />
 
     </ItemGroup>
