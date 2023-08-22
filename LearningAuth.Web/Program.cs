@@ -3,6 +3,7 @@ using LearningAuth.Contracts.Shared;
 using LearningAuth.Data;
 using LearningAuth.Data.Migrations;
 using LearningAuth.Data.Repositories;
+using LearningAuth.Web;
 using LearningAuth.Web.Models;
 using LearningAuth.Web.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -27,6 +28,7 @@ builder.Services
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -50,11 +52,12 @@ builder.Services
         options =>
         {
             options.AddPolicy(
-                "cookie_admin",
+                Constants.AuthenticationPolicies.CookieAdmin,
                 policy =>
                 {
                     policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
-                    policy.Requirements.Add(new RolesAuthorizationRequirement(new List<string> { Role.Admin.ToString() }));
+                    policy.Requirements.Add(
+                        new RolesAuthorizationRequirement(new List<string> { Role.Admin.ToString() }));
                 });
         });
 
