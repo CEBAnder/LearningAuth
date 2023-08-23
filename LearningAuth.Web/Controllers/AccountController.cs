@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace LearningAuth.Web.Controllers;
 
@@ -46,6 +47,7 @@ public class AccountController : ControllerBase
         return Ok($"User's name = {userName}");
     }
 
+    [EnableRateLimiting(Constants.RateLimiterPolicies.FixedWindow)]
     [Authorize(Constants.AuthenticationPolicies.CookieAdmin)]
     [HttpGet("cookie")]
     public IActionResult GetByCookie()

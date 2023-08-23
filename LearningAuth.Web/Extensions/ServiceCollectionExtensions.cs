@@ -1,3 +1,4 @@
+using System.Threading.RateLimiting;
 using FluentMigrator.Runner;
 using LearningAuth.Contracts.Shared;
 using LearningAuth.Data;
@@ -6,6 +7,7 @@ using LearningAuth.Web.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 
 namespace LearningAuth.Web.Extensions;
@@ -63,6 +65,26 @@ public static class ServiceCollectionExtensions
                                 new RolesAuthorizationRequirement(new List<string> { Role.Admin.ToString() }));
                         });
                 });
+
+        return services;
+    }
+
+    public static IServiceCollection AddRateLimiting(this IServiceCollection services)
+    {
+        services.AddRateLimiter(options =>
+        {
+            options.OnRejected = (context, token) =>
+            {
+                context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+                return new ValueTask();
+            };
+            options.AddFixedWindowLimiter(Constants.RateLimiterPolicies.FixedWindow, limiterOptions =>
+            {
+                limiterOptions.PermitLimit = 4;
+                limiterOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                limiterOptions.Window = TimeSpan.FromSeconds(30);
+            });
+        });
 
         return services;
     }
