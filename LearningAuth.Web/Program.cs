@@ -2,6 +2,7 @@ using LearningAuth.Data;
 using LearningAuth.Data.Repositories;
 using LearningAuth.Web.Extensions;
 using LearningAuth.Web.Services;
+using Microsoft.AspNetCore.HttpLogging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,12 +24,20 @@ foreach (var c in builder.Configuration.AsEnumerable())
     Console.WriteLine($"{c.Key}={c.Value}");
 }
 
+builder.Services.AddHttpLogging(options =>
+{
+    options.LoggingFields = HttpLoggingFields.RequestHeaders;
+    options.RequestHeaders.Add("Authorization");
+});
+
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseHttpLogging();
 
 app.UseAuthentication();
 app.UseAuthorization();
