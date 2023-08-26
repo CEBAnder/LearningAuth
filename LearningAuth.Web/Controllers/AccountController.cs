@@ -14,10 +14,12 @@ namespace LearningAuth.Web.Controllers;
 public class AccountController : ControllerBase
 {
     private readonly IAccountService _accountService;
+    private readonly ILogger<AccountController> _logger;
 
-    public AccountController(IAccountService accountService)
+    public AccountController(IAccountService accountService, ILogger<AccountController> logger)
     {
         _accountService = accountService;
+        _logger = logger;
     }
     
     [AllowAnonymous]
@@ -26,6 +28,7 @@ public class AccountController : ControllerBase
         CancellationToken cancellationToken = default)
     {
         var token = await _accountService.GenerateTokenForUserAsync(request.Name, request.Password, cancellationToken);
+        _logger.LogInformation("User {Login} got his JWT", request.Name);
         return Ok(token);
     }
 
@@ -36,13 +39,14 @@ public class AccountController : ControllerBase
     {
         var principal = await _accountService.GetCookiesPrincipalAsync(request.Name, request.Password, cancellationToken);
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-        
+        _logger.LogInformation("User {Login} got his cookie", request.Name);
         return Ok();
     }
 
     [HttpGet]
     public IActionResult Get()
     {
+        _logger.LogInformation("User {Login} called Get with JWT", HttpContext.User.Identity?.Name);
         var userName = HttpContext.User.Claims.First(claim => claim.Type == ClaimTypes.Name).Value;
         return Ok($"User's name = {userName}");
     }
@@ -52,6 +56,7 @@ public class AccountController : ControllerBase
     [HttpGet("cookie")]
     public IActionResult GetByCookie()
     {
+        _logger.LogInformation("User {Login} called Get with cookie", HttpContext.User.Identity?.Name);
         var userName = HttpContext.User.Claims.First(claim => claim.Type == ClaimTypes.Name).Value;
         return Ok($"User's name = {userName}");
     }
