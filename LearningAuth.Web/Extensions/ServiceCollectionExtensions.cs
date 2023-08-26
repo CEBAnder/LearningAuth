@@ -3,7 +3,7 @@ using FluentMigrator.Runner;
 using LearningAuth.Contracts.Shared;
 using LearningAuth.Data;
 using LearningAuth.Data.Migrations;
-using LearningAuth.Web.Models;
+using LearningAuth.Web.Configuration;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
@@ -33,8 +33,11 @@ public static class ServiceCollectionExtensions
         return services;
     }
     
-    public static IServiceCollection AddAuth(this IServiceCollection services)
+    public static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration configuration)
     {
+        services.Configure<AuthenticationOptions>(configuration.GetSection(AuthenticationOptions.Authentication));
+        var authOptions = configuration.GetSection(AuthenticationOptions.Authentication).Get<AuthenticationOptions>();
+        
         services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(
@@ -43,11 +46,11 @@ public static class ServiceCollectionExtensions
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
-                        ValidIssuer = AuthOptions.ISSUER,
+                        ValidIssuer = authOptions.Issuer,
                         ValidateAudience = true,
-                        ValidAudience = AuthOptions.AUDIENCE,
+                        ValidAudience = authOptions.Audience,
                         ValidateLifetime = true,
-                        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+                        IssuerSigningKey = authOptions.GetSymmetricSecurityKey(),
                         ValidateIssuerSigningKey = true
                     };
                 })

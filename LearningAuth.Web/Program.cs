@@ -15,8 +15,13 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 
-builder.Services.AddAuth();
+builder.Services.AddAuth(builder.Configuration);
 builder.Services.AddRateLimiting();
+
+foreach (var c in builder.Configuration.AsEnumerable())
+{
+    Console.WriteLine($"{c.Key}={c.Value}");
+}
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())

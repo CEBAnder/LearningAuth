@@ -5,8 +5,9 @@ using System.Text;
 using System.Text.Json;
 using LearningAuth.Contracts.Shared;
 using LearningAuth.Data.Repositories;
-using LearningAuth.Web.Models;
+using LearningAuth.Web.Configuration;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace LearningAuth.Web.Services;
@@ -14,10 +15,12 @@ namespace LearningAuth.Web.Services;
 public class AccountService : IAccountService
 {
     private readonly IUserRepository _userRepository;
+    private readonly AuthenticationOptions _authenticationOptions;
 
-    public AccountService(IUserRepository userRepository)
+    public AccountService(IUserRepository userRepository, IOptions<AuthenticationOptions> authenticationOptions)
     {
         _userRepository = userRepository;
+        _authenticationOptions = authenticationOptions.Value;
     }
 
     public async Task<string> GenerateTokenForUserAsync(string name, string password, CancellationToken cancellationToken = default)
@@ -30,11 +33,11 @@ public class AccountService : IAccountService
             claims.Add(new(ClaimTypes.Role, role.ToString()));
         }
         var jwt = new JwtSecurityToken(
-            issuer: AuthOptions.ISSUER,
-            audience: AuthOptions.AUDIENCE,
+            issuer: _authenticationOptions.Issuer,
+            audience: _authenticationOptions.Audience,
             claims: claims,
             expires: DateTime.UtcNow.Add(TimeSpan.FromDays(2)),
-            signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+            signingCredentials: new SigningCredentials(_authenticationOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
 
         return new JwtSecurityTokenHandler().WriteToken(jwt);
     }

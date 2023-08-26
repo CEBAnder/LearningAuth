@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace LearningAuth.Contracts.Shared;
+﻿namespace LearningAuth.Contracts.Shared;
 
 public enum Role
 {
