@@ -30,12 +30,16 @@ builder.Services.AddHttpLogging(options =>
     options.RequestHeaders.Add("Authorization");
 });
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseHealthChecks("/health");
 
 app.UseHttpLogging();
 
