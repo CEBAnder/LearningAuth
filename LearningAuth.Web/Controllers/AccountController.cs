@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.RateLimiting;
 namespace LearningAuth.Web.Controllers;
 
 [Authorize]
-[Route("Account")]
+[Route("[controller]")]
 public class AccountController : ControllerBase
 {
     private readonly IAccountService _accountService;

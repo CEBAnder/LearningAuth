@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LearningAuth.Web.Controllers;
 
-[Route("User")]
+[Route("[controller]")]
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
