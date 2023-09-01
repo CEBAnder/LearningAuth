@@ -1,3 +1,4 @@
+using System.Text.Json;
 using LearningAuth.Data;
 using LearningAuth.Data.Repositories;
 using LearningAuth.Web.Extensions;
@@ -31,6 +32,15 @@ builder.Services.AddHttpLogging(options =>
 });
 
 builder.Services.AddHealthChecks();
+
+builder.Logging.AddJsonConsole(options =>
+{
+    options.IncludeScopes = true;
+    options.JsonWriterOptions = new JsonWriterOptions
+    {
+        Indented = true
+    };
+});
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())

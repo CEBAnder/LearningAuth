@@ -20,11 +20,14 @@ public class UserController : ControllerBase
     public async Task<IActionResult> AddUser([FromBody] AddUserRequest request,
         CancellationToken cancellationToken = default)
     {
-        using var scope = _logger.BeginScope(new List<KeyValuePair<string, string>>
-            { new("TransactionId", Guid.NewGuid().ToString()) });
-        _logger.LogInformation("Started creating user {Login}", request.Name);
-        var id = await _userService.AddUserAsync(request.ToCommand(), cancellationToken);
-        _logger.LogInformation("Created user {Login}", request.Name);
-        return Ok(id);
+        var transactionId = Guid.NewGuid().ToString();
+        using (_logger.BeginScope(new List<KeyValuePair<string, object>>
+                   { new("TransactionId", transactionId) }))
+        {
+            _logger.LogInformation("Started creating user {Login}", request.Name);
+            var id = await _userService.AddUserAsync(request.ToCommand(), cancellationToken);
+            _logger.LogInformation("Created user {Login}", request.Name);
+            return Ok(id);
+        }
     }
 }
