@@ -2,7 +2,7 @@ build_version := 1.0.$(shell date +%s)
 
 all: dotnet_all docker_all
 
-dotnet_all: clean restore build publish
+dotnet_all: clean restore build publish test
 
 clean:
 	dotnet clean
@@ -15,6 +15,9 @@ build:
 
 publish:
 	dotnet publish
+
+test:
+	dotnet test
 
 docker_all: docker_build
 
