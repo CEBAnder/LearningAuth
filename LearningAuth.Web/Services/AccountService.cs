@@ -6,6 +6,7 @@ using System.Text.Json;
 using LearningAuth.Contracts.Shared;
 using LearningAuth.Data.Repositories;
 using LearningAuth.Web.Configuration;
+using LearningAuth.Web.Exceptions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -26,6 +27,10 @@ public class AccountService : IAccountService
     public async Task<string> GenerateTokenForUserAsync(string name, string password, CancellationToken cancellationToken = default)
     {
         var user = await _userRepository.FindUser(name, HashPassword(password), cancellationToken);
+        if (user == null)
+        {
+            throw new UserNotFoundException();
+        }
         var claims = new List<Claim> {new(ClaimTypes.Name, user.Name!) };
         var roles = JsonSerializer.Deserialize<IEnumerable<Role>>(user.Roles)!;
         foreach (var role in roles)

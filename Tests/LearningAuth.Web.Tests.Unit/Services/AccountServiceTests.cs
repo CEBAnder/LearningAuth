@@ -1,6 +1,7 @@
 using LearningAuth.Data.Models;
 using LearningAuth.Data.Repositories;
 using LearningAuth.Web.Configuration;
+using LearningAuth.Web.Exceptions;
 using LearningAuth.Web.Services;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -19,13 +20,22 @@ public class AccountServiceTests
         
         Assert.That(token, Is.Not.Empty);
     }
+    
+    [Test]
+    public void GenerateTokenForUserAsync_ThrowsException_WhenUserNotFound()
+    {
+        var accountService = GetAccountService();
+
+        Assert.ThrowsAsync<UserNotFoundException>(async () =>
+            await accountService.GenerateTokenForUserAsync("missing_name", "password"));
+    }
 
     private IAccountService GetAccountService()
     {
         var userRepositoryMock = new Mock<IUserRepository>();
         userRepositoryMock
             .Setup(x => x.FindUser(
-                It.IsAny<string>(), 
+                It.Is<string>(s => s.StartsWith('n')), 
                 It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(GenerateFakeUser());
