@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearningAuth.Data", "Learni
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearningAuth.Contracts.Shared", "LearningAuth.Contracts.Shared\LearningAuth.Contracts.Shared.csproj", "{2146886C-6859-47A9-83F9-11CC094FCDF1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearningAuth.Web.Tests.Unit", "Tests\LearningAuth.Web.Tests.Unit\LearningAuth.Web.Tests.Unit.csproj", "{1D9A296B-024E-4A2D-A97D-2D154DA7C025}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,5 +31,9 @@ Global
 		{2146886C-6859-47A9-83F9-11CC094FCDF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2146886C-6859-47A9-83F9-11CC094FCDF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2146886C-6859-47A9-83F9-11CC094FCDF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D9A296B-024E-4A2D-A97D-2D154DA7C025}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D9A296B-024E-4A2D-A97D-2D154DA7C025}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D9A296B-024E-4A2D-A97D-2D154DA7C025}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D9A296B-024E-4A2D-A97D-2D154DA7C025}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
